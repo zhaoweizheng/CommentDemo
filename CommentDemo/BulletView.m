@@ -26,9 +26,8 @@
         
         CGFloat width = [comment sizeWithAttributes: attr].width;
         self.bounds = CGRectMake(0, 0, width + 2 * Padding, 30);
-        self.lbComment.text = comment;
+        self.lbComment.text = [NSString stringWithString:comment];
         self.lbComment.frame = CGRectMake(Padding, 0, width, 30);
-        
     }
     return self;
 }
@@ -67,10 +66,10 @@
 }
 
 - (UILabel *)lbComment {
-    if (_lbComment) {
+    if (!_lbComment) {
         _lbComment = [[UILabel alloc] initWithFrame:CGRectZero];
         _lbComment.font = [UIFont systemFontOfSize:14];
-        _lbComment.textColor = [UIColor whiteColor];
+        _lbComment.textColor = [UIColor blueColor];
         _lbComment.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_lbComment];
     }
