@@ -63,7 +63,35 @@
     [self.bulletViews addObject:view];
     __weak typeof (view) weakView = view;
     __weak typeof (self) myself = self;
-    view.moveStatusBlock = ^{
+    view.moveStatusBlock = ^(Movestatus status){
+        switch (status) {
+            case Start:{
+                //弹幕开始进入屏幕, 将View加入弹幕管理的变量中bulletViews
+                [myself.bulletViews addObject:weakView];
+                break;
+            }
+            case Enter: {
+                //弹幕完全进入屏幕, 判断是否还有其他内容, 如果有则在改弹幕轨迹中创建一个弹幕
+                NSString *comment = [myself nextCommet];
+                if (comment) {
+                    [myself createBulletView:comment tranjectory:tranjectory]; //递归
+                }
+                 break;
+            }
+            case End: {
+                //弹幕飞出屏幕后从BulletView中删除, 释放资源
+                //if (myself.bulletViews containsObject:weakView) {
+                    //[weakView stopAnimation];
+                    
+                //}
+                break;
+            }
+                
+                
+            default:
+                break;
+        }
+        
         //移除屏幕后销毁弹幕并释放资源
         [weakView stopAnimation];
         [myself.bulletViews removeObject:weakView];
@@ -72,6 +100,17 @@
     if (self.generateViewBlock) {
         self.generateViewBlock(view);
     }
+}
+
+- (NSString *)nextCommet {
+    if (self.bulletComments.count == 0) {
+        return nil;
+    }
+    NSString *comment = [self.bulletComments firstObject];
+    if (comment) {
+        [self.bulletComments removeObject:comment];
+    }
+    return comment;
 }
 
 //弹幕停止执行

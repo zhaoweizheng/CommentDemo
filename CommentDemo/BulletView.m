@@ -41,6 +41,17 @@
     CGFloat duration = 4.0f;//弹幕从初始化到消失的时间
     CGFloat wholeWidth = screenWidth + CGRectGetWidth(self.bounds);//总宽度=屏幕宽度+弹幕宽度
     
+    //弹幕开始
+    if (self.moveStatusBlock) {
+        self.moveStatusBlock(Start);
+    }
+    
+    //t = s/v;
+    CGFloat speed = wholeWidth/duration;//匀速
+    CGFloat enterDuration = CGRectGetWidth(self.bounds)/speed;
+    
+    [self performSelector:@selector(enterScreen) withObject:nil afterDelay:enterDuration];
+   
     __block CGRect frame = self.frame;
     [UIView animateWithDuration:duration
                           delay:0
@@ -53,9 +64,16 @@
                          
                          //回调告诉动画结束
                          if (self.moveStatusBlock) {
-                             self.moveStatusBlock();
+                             self.moveStatusBlock(End);
                          }
                      }];
+}
+
+
+- (void)enterScreen {
+    if (self.moveStatusBlock) {
+        self.moveStatusBlock(End);
+    }
 }
 
 //结束动画
